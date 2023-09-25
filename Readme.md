@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Nadzeya Zhukovich](https://up.htmlacademy.ru/ecmascript/20/user/1382715).
-* Наставник: `Неизвестно`.
+* Наставник: `Oleg Glushenko`.
 
 ---
 
