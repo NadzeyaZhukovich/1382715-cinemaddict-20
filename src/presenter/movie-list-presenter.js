@@ -46,27 +46,43 @@ export default class MovieListPresenter {
   }
 
   init() {
-    render(this.#user, this.#moviesHeaderContainer);
-    render(new NavigationView({navigationList: this.#navigationList}), this.#moviesMainContainer);
-    render(this.#sort, this.#moviesMainContainer);
+    this.#renderUser();
+    this.#renderNavigation();
+    this.#renderSort();
 
-    this.#renderMovieList(this.#movies);
+    this.#renderMovieBoard(this.#movies);
     this.#renderShowMoreButton();
     render(this.#footerStatistics, this.#moviesFooterStatisticsContainer);
   }
 
-  #renderMovieList(movieList) {
+  #renderMovieBoard(movieList) {
     if(!movieList.length) {
       this.#renderMovieListEmpty();
     } else {
-      render(this.#movieList, this.#moviesMainContainer);
+      this.#renderMovieList();
 
-      //TODO: сейчас это вышлядит что всегда выводится только значение из MOVIE_COUNT_PER_STEP
+      //TODO: сейчас это выглядит что всегда выводится только значение из MOVIE_COUNT_PER_STEP
       //TODO: или я не понимаю?
       for(let i = 0; i < Math.min(movieList.length, MOVIE_COUNT_PER_STEP); i++) {
         this.#renderMovieCard(movieList[i]);
       }
     }
+  }
+
+  #renderUser() {
+    render(this.#user, this.#moviesHeaderContainer);
+  }
+ 
+  #renderNavigation() {
+    render(new NavigationView({navigationList: this.#navigationList}), this.#moviesMainContainer);
+  }
+
+  #renderSort() {
+    render(this.#sort, this.#moviesMainContainer);
+  }
+
+  #renderMovieList() {
+    render(this.#movieList, this.#moviesMainContainer);
   }
 
   #renderMovieCard(movie) {
@@ -98,7 +114,7 @@ export default class MovieListPresenter {
     const newRenderMoviesCount = Math.min(moviesCount, this.#renderMoviesCount + MOVIE_COUNT_PER_STEP);
     const movies = this.#movies.slice(this.#renderMoviesCount, newRenderMoviesCount);
 
-    this.#renderMovieList(movies);
+    this.#renderMovieBoard(movies);
     this.#renderMoviesCount = newRenderMoviesCount;
 
     if(this.#renderMoviesCount >= moviesCount) {
