@@ -7,8 +7,8 @@ import NavigationView from '../view/navigation-view.js';
 import FilmsListView from '../view/films-list-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import FilmListEmptyView from '../view/film-list-empty-view.js';
-import { generateNavigation } from '../model/navigation-model.js';
-
+import {generateNavigation} from '../model/navigation-model.js';
+import {updateMovie} from '../utils/common.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
 export default class MovieListPresenter {
@@ -72,7 +72,7 @@ export default class MovieListPresenter {
   #renderUser() {
     render(this.#user, this.#moviesHeaderContainer);
   }
- 
+
   #renderNavigation() {
     render(new NavigationView({navigationList: this.#navigationList}), this.#moviesMainContainer);
   }
@@ -90,6 +90,7 @@ export default class MovieListPresenter {
       movieContainer: this.#movieList.getFilmCardContainer(),
       moviesBodyContainer: this.#moviesBodyContainer,
       onModeChange: this.#handleModeChange,
+      onMovieDataChange: this.#handelMovieChange,
     });
 
     moviePresenter.init(movie);
@@ -124,5 +125,10 @@ export default class MovieListPresenter {
 
   #handleModeChange = () => {
     this.#moviePresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #handelMovieChange = (updatedMovie) => {
+    this.#movies = updateMovie(this.#movies, updatedMovie);
+    this.#moviePresenters.get(updatedMovie.id).init(updatedMovie);
   };
 }

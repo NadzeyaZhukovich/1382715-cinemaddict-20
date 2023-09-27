@@ -1,4 +1,4 @@
-import {render, remove} from '../framework/render.js';
+import {render, remove, replace} from '../framework/render.js';
 
 import FilmCardView from '../view/film-card-view.js';
 import FilmDetailsPopupView from '../view/film-details-popup-view.js';
@@ -12,6 +12,7 @@ export default class MoviePresenter {
   #mode = Mode.DEFAULT;
 
   #handelModeChange = null;
+  #handelMovieDataChange = null;
 
   #movieContainer = null;
   #moviesBodyContainer = null;
@@ -19,25 +20,54 @@ export default class MoviePresenter {
   #filmCard = null;
   #filmDetailsPopup = null;
 
-  constructor({movieContainer, moviesBodyContainer, onModeChange}) {
+  constructor({movieContainer, moviesBodyContainer, onModeChange, onMovieDataChange}) {
     this.#movieContainer = movieContainer;
     this.#moviesBodyContainer = moviesBodyContainer;
     this.#handelModeChange = onModeChange;
+    this.#handelMovieDataChange = onMovieDataChange;
   }
 
   init(movie) {
     this.#movie = movie;
 
+    const prevFilmCard = this.#filmCard;
+    const prevFilmDetailsPopup = this.#filmDetailsPopup;
+
     this.#filmCard = new FilmCardView({
       movie: this.#movie,
       onMoreDetailClick: this.#handelMoreDetailClick,
+      onFavoriteMovieClick: this.#handelFavoriteMovieClick,
+      onWatchlistMovieClick: this.#handelWatchlistMovieClick,
+      onAlreadyWatchedMovieClick: this.#handelAlreadyWatchedMovieClick,
     });
 
     this.#filmDetailsPopup = new FilmDetailsPopupView({
       movie: this.#movie,
     });
 
-    render(this.#filmCard, this.#movieContainer);
+    if(prevFilmCard === null || prevFilmDetailsPopup === null) {
+      render(this.#filmCard, this.#movieContainer);
+      return;
+    }
+
+    // Проверка на наличие в DOM необходима,
+    // чтобы не пытаться заменить то, что не было отрисовано
+
+    if(this.#mode === Mode.DEFAULT) {
+      replace(this.#filmCard, prevFilmCard);
+    }
+
+    if(this.#mode === Mode.DETAILS) {
+      replace(this.FilmDetailsPopupView, prevFilmDetailsPopup);
+    }
+
+    remove(prevFilmCard);
+    remove(prevFilmDetailsPopup);
+  }
+
+  destroy() {
+    remove(this.#filmCard);
+    remove(this.#filmDetailsPopup);
   }
 
   #openDetailsPopup() {
@@ -60,6 +90,27 @@ export default class MoviePresenter {
 
   #handelMoreDetailClick = () => {
     this.#openDetailsPopup();
+  };
+
+  #handelFavoriteMovieClick = () => {
+    const movie = this.#movie;
+    const userDetails = movie.userDetails;
+    userDetails.favorite = !userDetails.favorite;
+    this.#handelMovieDataChange({...this.#movie, userDetails});
+  };
+
+  #handelWatchlistMovieClick = () => {
+    const movie = this.#movie;
+    const userDetails = movie.userDetails;
+    userDetails.watchlist = !userDetails.watchlist;
+    this.#handelMovieDataChange({...movie, userDetails});
+  };
+
+  #handelAlreadyWatchedMovieClick = () => {
+    const movie = this.#movie;
+    const userDetails = movie.userDetails;
+    userDetails.alreadyWatched = !userDetails.alreadyWatched;
+    this.#handelMovieDataChange({...this.#movie, userDetails});
   };
 
   #escKeyDownHandler = (evt) => {
