@@ -44,7 +44,7 @@ const movies = [
       'title': 'A Little Pony Without The Carpet',
       'alternative_title': 'Laziness Who Sold Themselves',
       'description': 'Oscar-winning film, a war drama about two young people, from the creators of timeless classic Nu Pogodi! and Alice in Wonderland, with the best fight scenes since Bruce Lee.',
-      'total_rating': 5.3,
+      'total_rating': 4.3,
       'poster': 'images/posters/made-for-each-other.png',
       'age_rating': 0,
       'director': 'Tom Ford',
@@ -59,7 +59,7 @@ const movies = [
       ],
       'duration': 59,
       'release': {
-        'date': '2019-05-11T00:00:00.000Z',
+        'date': '2020-06-11T00:00:00.000Z',
         'release_country': 'Finland'
       }
     },
@@ -79,7 +79,7 @@ const movies = [
       'title': 'A Little Pony Without The Carpet',
       'alternative_title': 'Laziness Who Sold Themselves',
       'description': 'Oscar-winning film, a war drama about two young people, from the creators of timeless classic Nu Pogodi! and Alice in Wonderland, with the best fight scenes since Bruce Lee.',
-      'total_rating': 5.3,
+      'total_rating': 9.0,
       'poster': 'images/posters/sagebrush-trail.jpg',
       'age_rating': 0,
       'director': 'Tom Ford',
@@ -94,7 +94,7 @@ const movies = [
       ],
       'duration': 129,
       'release': {
-        'date': '2019-05-11T00:00:00.000Z',
+        'date': '2019-07-11T00:00:00.000Z',
         'release_country': 'Finland'
       }
     },
@@ -114,7 +114,7 @@ const movies = [
       'title': 'A Little Pony Without The Carpet',
       'alternative_title': 'Laziness Who Sold Themselves',
       'description': 'Oscar-winning film, a war drama about two young people, from the creators of timeless classic Nu Pogodi! and Alice in Wonderland, with the best fight scenes since Bruce Lee.',
-      'total_rating': 5.3,
+      'total_rating': 8.6,
       'poster': 'images/posters/santa-claus-conquers-the-martians.jpg',
       'age_rating': 0,
       'director': 'Tom Ford',
@@ -129,7 +129,7 @@ const movies = [
       ],
       'duration': 77,
       'release': {
-        'date': '2019-05-11T00:00:00.000Z',
+        'date': '2022-09-11T00:00:00.000Z',
         'release_country': 'Finland'
       }
     },
@@ -149,7 +149,7 @@ const movies = [
       'title': 'A Little Pony Without The Carpet',
       'alternative_title': 'Laziness Who Sold Themselves',
       'description': 'Oscar-winning film, a war drama about two young people, from the creators of timeless classic Nu Pogodi! and Alice in Wonderland, with the best fight scenes since Bruce Lee.',
-      'total_rating': 5.3,
+      'total_rating': 3.3,
       'poster': 'images/posters/the-dance-of-life.jpg',
       'age_rating': 0,
       'director': 'Tom Ford',
@@ -164,7 +164,7 @@ const movies = [
       ],
       'duration': 77,
       'release': {
-        'date': '2019-05-11T00:00:00.000Z',
+        'date': '2020-10-11T00:00:00.000Z',
         'release_country': 'Finland'
       }
     },
@@ -184,7 +184,7 @@ const movies = [
       'title': 'A Little Pony Without The Carpet',
       'alternative_title': 'Laziness Who Sold Themselves',
       'description': 'Oscar-winning film, a war drama about two young people, from the creators of timeless classic Nu Pogodi! and Alice in Wonderland, with the best fight scenes since Bruce Lee.',
-      'total_rating': 5.3,
+      'total_rating': 6.3,
       'poster': 'images/posters/the-man-with-the-golden-arm.jpg',
       'age_rating': 0,
       'director': 'Tom Ford',
@@ -199,7 +199,7 @@ const movies = [
       ],
       'duration': 77,
       'release': {
-        'date': '2019-05-11T00:00:00.000Z',
+        'date': '2018-01-11T00:00:00.000Z',
         'release_country': 'Finland'
       }
     },
