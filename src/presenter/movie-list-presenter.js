@@ -79,8 +79,6 @@ export default class MovieListPresenter {
     remove(this.#showMoreButtonComponnet);
   }
 
-  
-
   #renderUser() {
     render(this.#user, this.#moviesHeaderContainer);
   }
@@ -93,7 +91,7 @@ export default class MovieListPresenter {
     this.#sortComponent = new SortView({
       onSortTypeChange: this.#handeleSortTypeChange,
       currentSortType: this.#currentSortType,
-    })
+    });
     render(this.#sortComponent, this.#moviesMainContainer);
   }
 
@@ -164,7 +162,7 @@ export default class MovieListPresenter {
     this.#currentSortType = sortType;
   }
 
-  #handeleSortTypeChange = (sortType)  => {
+  #handeleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }
