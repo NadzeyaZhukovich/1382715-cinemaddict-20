@@ -9,6 +9,8 @@ import ShowMoreButtonView from '../view/show-more-button-view.js';
 import FilmListEmptyView from '../view/film-list-empty-view.js';
 import {generateNavigation} from '../model/navigation-model.js';
 import {updateMovie} from '../utils/common.js';
+import {sortMovieOnDate, sortByRating} from '../utils/sort.js';
+import {SortType} from '../utils/const.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
 export default class MovieListPresenter {
@@ -20,54 +22,66 @@ export default class MovieListPresenter {
   #showMoreButtonComponnet = null;
 
   #movies = [];
+  #sourcedMovies = [];
 
   #navigationList = null;
-
+  #sortComponent = null;
   #footerStatistics = new FooterStatisticsView();
   #user = new UserView();
-  // #navigation = new NavigationView({
-  //   navigationList: this.#navigationList
-  // });
-  #sort = new SortView();
   #movieList = new FilmsListView();
   #movieListEmpty = new FilmListEmptyView();
 
   #moviePresenters = new Map();
 
   #renderMoviesCount = MOVIE_COUNT_PER_STEP;
+  #currentSortType = SortType.DEFAULT;
 
   constructor({moviesHeaderContainer, moviesMainContainer, moviesFooterStatisticsContainer, moviewsBodyContainer, movies}) {
     this.#moviesHeaderContainer = moviesHeaderContainer;
     this.#moviesMainContainer = moviesMainContainer;
     this.#moviesFooterStatisticsContainer = moviesFooterStatisticsContainer;
     this.#moviesBodyContainer = moviewsBodyContainer;
-    this.#movies = movies;
+    this.#movies = [...movies];
+    this.#sourcedMovies = [...movies];
     this.#navigationList = generateNavigation(this.#movies);
   }
 
   init() {
+    console.log('sourcedMovies =>', this.#sourcedMovies);
+
     this.#renderUser();
     this.#renderNavigation();
-    this.#renderSort();
-
     this.#renderMovieBoard(this.#movies);
-    this.#renderShowMoreButton();
     render(this.#footerStatistics, this.#moviesFooterStatisticsContainer);
   }
 
   #renderMovieBoard(movieList) {
+    this.#renderSort();
+    this.#renderMovieListContent(movieList);
+    this.#renderShowMoreButton();
+  }
+
+  #renderMovieListContent(movieList) {
     if(!movieList.length) {
       this.#renderMovieListEmpty();
     } else {
       this.#renderMovieList();
 
-      //TODO: сейчас это выглядит что всегда выводится только значение из MOVIE_COUNT_PER_STEP
-      //TODO: или я не понимаю?
       for(let i = 0; i < Math.min(movieList.length, MOVIE_COUNT_PER_STEP); i++) {
         this.#renderMovieCard(movieList[i]);
       }
     }
   }
+
+  #cleanMovieBoard() {
+    this.#moviePresenters.forEach((presenter) => presenter.destroy());
+    this.#moviePresenters.clear();
+
+    remove(this.#sortComponent);
+    remove(this.#showMoreButtonComponnet);
+  }
+
+  
 
   #renderUser() {
     render(this.#user, this.#moviesHeaderContainer);
@@ -78,7 +92,11 @@ export default class MovieListPresenter {
   }
 
   #renderSort() {
-    render(this.#sort, this.#moviesMainContainer);
+    this.#sortComponent = new SortView({
+      onSortTypeChange: this.#handeleSortTypeChange,
+      currentSortType: this.#currentSortType,
+    })
+    render(this.#sortComponent, this.#moviesMainContainer);
   }
 
   #renderMovieList() {
@@ -115,7 +133,7 @@ export default class MovieListPresenter {
     const newRenderMoviesCount = Math.min(moviesCount, this.#renderMoviesCount + MOVIE_COUNT_PER_STEP);
     const movies = this.#movies.slice(this.#renderMoviesCount, newRenderMoviesCount);
 
-    this.#renderMovieBoard(movies);
+    this.#renderMovieListContent(movies);
     this.#renderMoviesCount = newRenderMoviesCount;
 
     if(this.#renderMoviesCount >= moviesCount) {
@@ -129,6 +147,33 @@ export default class MovieListPresenter {
 
   #handelMovieChange = (updatedMovie) => {
     this.#movies = updateMovie(this.#movies, updatedMovie);
+    this.#sourcedMovies = updateMovie(this.#sourcedMovies, updatedMovie);
     this.#moviePresenters.get(updatedMovie.id).init(updatedMovie);
+  };
+
+  #sortMovies(sortType) {
+    switch(sortType) {
+      case SortType.DATE:
+        this.#movies.sort(sortMovieOnDate);
+        break;
+      case SortType.RATING:
+        this.#movies.sort(sortByRating);
+        break;
+      default:
+        this.#movies = [...this.#sourcedMovies];
+    }
+
+    this.#currentSortType = sortType;
+  }
+
+  #handeleSortTypeChange = (sortType)  => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#renderMoviesCount = MOVIE_COUNT_PER_STEP;
+    this.#sortMovies(sortType);
+    this.#cleanMovieBoard();
+    this.#renderMovieBoard(this.#movies);
   };
 }

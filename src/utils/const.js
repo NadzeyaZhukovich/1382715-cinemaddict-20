@@ -21,4 +21,18 @@ const navigationTitle = (navigationType) => {
   }
 };
 
-export {EmptyListTitle, NavigationType, navigationTitle};
+const SortType = {
+  DEFAULT: 'default',
+  DATE: 'date',
+  RATING: 'rating',
+}
+
+const SortTitle = (sortType) => {
+  switch (sortType) {
+    case SortType.DEFAULT: return 'Sort by default';
+    case SortType.DATE: return 'Sort by date';
+    case SortType.RATING: return 'Sort by rating';
+  }
+}
+
+export {EmptyListTitle, NavigationType, navigationTitle, SortType, SortTitle};
