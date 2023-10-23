@@ -47,8 +47,6 @@ export default class MovieListPresenter {
   }
 
   init() {
-    console.log('sourcedMovies =>', this.#sourcedMovies);
-
     this.#renderUser();
     this.#renderNavigation();
     this.#renderMovieBoard(this.#movies);
