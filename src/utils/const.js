@@ -35,4 +35,6 @@ const SortTitle = (sortType) => {
   }
 };
 
-export {EmptyListTitle, NavigationType, navigationTitle, SortType, SortTitle};
+const EmojiType = ['smile', 'sleeping', 'puke', 'angry'];
+
+export {EmptyListTitle, NavigationType, navigationTitle, SortType, SortTitle, EmojiType};

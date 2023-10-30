@@ -1,12 +1,91 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {humanizeDateDayMonthYear, humanizeDateHoursMin} from '../utils/data.js';
+import {humanizeDateDayMonthYear, humanizeDateHoursMin, humanizeDateDayMonthYearTime} from '../utils/data.js';
+import {EmojiType} from '../utils/const.js';
 
 function creatMovieGenreList(genres) {
   return genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 }
-function creatFilmDetailsPopup(movieDetail) {
+
+function creatCommentsContainer(comments) {
+  const commentForm = creatCommentForm();
+  const commentList = creatCommentList(comments);
+  
+  return `
+    <section class="film-details__comments-wrap">
+      <h3 class="film-details__comments-title">Comments 
+        <span class="film-details__comments-count">${comments.length}</span>
+      </h3>
+      ${commentList}
+      ${commentForm}
+    </section>
+  `
+}
+
+function creatCommentList(comments) {
+  if(!comments) {
+    return '';
+  }
+
+  const commetsList = comments.map((comment) => creatComment(comment));
+
+  return `
+    <ul class="film-details__comments-list">
+      ${commetsList}
+    </ul>
+  `
+}
+
+function creatComment(comment) {
+  return `
+    <li class="film-details__comment">
+      <span class="film-details__comment-emoji">
+        <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-${comment.emotion}">
+      </span>
+      <div>
+        <p class="film-details__comment-text">${comment.comment}</p>
+        <p class="film-details__comment-info">
+          <span class="film-details__comment-author">${comment.author}</span>
+          <span class="film-details__comment-day">${humanizeDateDayMonthYearTime(comment.date)}</span>
+          <button class="film-details__comment-delete">Delete</button>
+        </p>
+      </div>
+    </li>
+  `
+}
+
+function creatEmojiList(emojis) {
+  return emojis.map((emojiType) => `
+    <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emojiType}" value="${emojiType}">
+      <label class="film-details__emoji-label" for="emoji-${emojiType}">
+        <img src="./images/emoji/${emojiType}.png" width="30" height="30" alt="emoji">
+    </label>`)
+    .join('');
+}
+
+function creatCommentForm() {
+  const emojiList = creatEmojiList(EmojiType);
+
+  return `
+    <form class="film-details__new-comment" action="" method="get">
+      <div class="film-details__add-emoji-label">
+        <img src="images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
+      </div>
+
+      <label class="film-details__comment-label">
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+      </label>
+
+      <div class="film-details__emoji-list">
+        ${emojiList}
+      </div>
+    </form>
+  `
+}
+
+function creatFilmDetailsPopup(movieDetail, comments) {
   const {filmInfo, userDetails} = movieDetail;
   const genreList = creatMovieGenreList(filmInfo.genre);
+  const commentsContainer = creatCommentsContainer(comments);
   const movieWatchlistClassName = userDetails.watchlist
     ? 'film-details__control-button--active'
     : '';
@@ -27,7 +106,7 @@ function creatFilmDetailsPopup(movieDetail) {
             <div class="film-details__poster">
               <img class="film-details__poster-img" src="./${filmInfo.poster}" alt="${filmInfo.alternativeTitle}">
     
-              <p class="film-details__age">18+</p>
+              <p class="film-details__age">${filmInfo.ageRating}+</p>
             </div>
     
             <div class="film-details__info">
@@ -85,94 +164,7 @@ function creatFilmDetailsPopup(movieDetail) {
         </div>
     
         <div class="film-details__bottom-container">
-          <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
-    
-            <ul class="film-details__comments-list">
-              <li class="film-details__comment">
-                <span class="film-details__comment-emoji">
-                  <img src="./images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
-                </span>
-                <div>
-                  <p class="film-details__comment-text">Interesting setting and a good cast</p>
-                  <p class="film-details__comment-info">
-                    <span class="film-details__comment-author">Tim Macoveev</span>
-                    <span class="film-details__comment-day">2019/12/31 23:59</span>
-                    <button class="film-details__comment-delete">Delete</button>
-                  </p>
-                </div>
-              </li>
-              <li class="film-details__comment">
-                <span class="film-details__comment-emoji">
-                  <img src="./images/emoji/sleeping.png" width="55" height="55" alt="emoji-sleeping">
-                </span>
-                <div>
-                  <p class="film-details__comment-text">Booooooooooring</p>
-                  <p class="film-details__comment-info">
-                    <span class="film-details__comment-author">John Doe</span>
-                    <span class="film-details__comment-day">2 days ago</span>
-                    <button class="film-details__comment-delete">Delete</button>
-                  </p>
-                </div>
-              </li>
-              <li class="film-details__comment">
-                <span class="film-details__comment-emoji">
-                  <img src="./images/emoji/puke.png" width="55" height="55" alt="emoji-puke">
-                </span>
-                <div>
-                  <p class="film-details__comment-text">Very very old. Meh</p>
-                  <p class="film-details__comment-info">
-                    <span class="film-details__comment-author">John Doe</span>
-                    <span class="film-details__comment-day">2 days ago</span>
-                    <button class="film-details__comment-delete">Delete</button>
-                  </p>
-                </div>
-              </li>
-              <li class="film-details__comment">
-                <span class="film-details__comment-emoji">
-                  <img src="./images/emoji/angry.png" width="55" height="55" alt="emoji-angry">
-                </span>
-                <div>
-                  <p class="film-details__comment-text">Almost two hours? Seriously?</p>
-                  <p class="film-details__comment-info">
-                    <span class="film-details__comment-author">John Doe</span>
-                    <span class="film-details__comment-day">Today</span>
-                    <button class="film-details__comment-delete">Delete</button>
-                  </p>
-                </div>
-              </li>
-            </ul>
-    
-            <form class="film-details__new-comment" action="" method="get">
-              <div class="film-details__add-emoji-label"></div>
-    
-              <label class="film-details__comment-label">
-                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-              </label>
-    
-              <div class="film-details__emoji-list">
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-                <label class="film-details__emoji-label" for="emoji-smile">
-                  <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-                </label>
-    
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-                <label class="film-details__emoji-label" for="emoji-sleeping">
-                  <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-                </label>
-    
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-                <label class="film-details__emoji-label" for="emoji-puke">
-                  <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-                </label>
-    
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-                <label class="film-details__emoji-label" for="emoji-angry">
-                  <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-                </label>
-              </div>
-            </form>
-          </section>
+          ${commentsContainer}
         </div>
       </div>
     </section>
@@ -180,13 +172,21 @@ function creatFilmDetailsPopup(movieDetail) {
 }
 export default class FilmDetailsPopupView extends AbstractView {
   #movie = null;
-  constructor({movie}) {
+  #comments = null;
+  constructor({movie, comments}) {
     super();
     this.#movie = movie;
+    this.#comments = [{
+      id: 'd9ee14cd-c0ca-4eab-8088-2219a0dbdc02',
+      comment: 'A film that changed my life, a true masterpiece, post-credit scene was just amazing omg.',
+      emotion: 'smile',
+      author: 'Ilya OReilly',
+      date: '2022-11-26T16:12:32.554Z'
+    }];
   }
 
   get template() {
-    return creatFilmDetailsPopup(this.#movie);
+    return creatFilmDetailsPopup(this.#movie, this.#comments);
   }
 
   getClosePopupButton() {

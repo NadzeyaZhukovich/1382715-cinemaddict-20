@@ -10,7 +10,7 @@ const movies = [
       'description': 'Oscar-winning film, a war drama about two young people, from the creators of timeless classic Nu Pogodi! and Alice in Wonderland, with the best fight scenes since Bruce Lee.',
       'total_rating': 5.3,
       'poster': 'images/posters/popeye-meets-sinbad.png',
-      'age_rating': 0,
+      'age_rating': 3,
       'director': 'Tom Ford',
       'writers': [
         'Takeshi Kitano'
@@ -46,7 +46,7 @@ const movies = [
       'description': 'Oscar-winning film, a war drama about two young people, from the creators of timeless classic Nu Pogodi! and Alice in Wonderland, with the best fight scenes since Bruce Lee.',
       'total_rating': 4.3,
       'poster': 'images/posters/made-for-each-other.png',
-      'age_rating': 0,
+      'age_rating': 14,
       'director': 'Tom Ford',
       'writers': [
         'Takeshi Kitano'
@@ -116,7 +116,7 @@ const movies = [
       'description': 'Oscar-winning film, a war drama about two young people, from the creators of timeless classic Nu Pogodi! and Alice in Wonderland, with the best fight scenes since Bruce Lee.',
       'total_rating': 8.6,
       'poster': 'images/posters/santa-claus-conquers-the-martians.jpg',
-      'age_rating': 0,
+      'age_rating': 18,
       'director': 'Tom Ford',
       'writers': [
         'Takeshi Kitano'
