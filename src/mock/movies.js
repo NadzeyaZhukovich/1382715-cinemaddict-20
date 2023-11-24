@@ -2,7 +2,9 @@ const movies = [
   {
     'id': 'd9ee14cd-c0ca-4eab-8088-2219a0dbdc001',
     'comments': [
-      'd9ee14cd-c0ca-4eab-8088-2219a0dbdc01'
+      'd9ee14cd-c0ca-4eab-8088-2219a0dbdc01',
+      'd9ee14cd-c0ca-4eab-8088-2219a0dbdc02',
+      'd9ee14cd-c0ca-4eab-8088-2219a0dbdc03'
     ],
     'film_info': {
       'title': 'A Little Pony Without The Carpet',

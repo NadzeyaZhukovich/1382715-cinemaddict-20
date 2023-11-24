@@ -9,6 +9,7 @@ const Mode = {
 };
 export default class MoviePresenter {
   #movie = null;
+  #comments = null;
   #mode = Mode.DEFAULT;
 
   #handelModeChange = null;
@@ -27,8 +28,9 @@ export default class MoviePresenter {
     this.#handelMovieDataChange = onMovieDataChange;
   }
 
-  init(movie) {
+  init(movie, comments) {
     this.#movie = movie;
+    this.#comments = comments;
 
     const prevFilmCard = this.#filmCard;
     const prevFilmDetailsPopup = this.#filmDetailsPopup;
@@ -39,10 +41,6 @@ export default class MoviePresenter {
       onFavoriteMovieClick: this.#handelFavoriteMovieClick,
       onWatchlistMovieClick: this.#handelWatchlistMovieClick,
       onAlreadyWatchedMovieClick: this.#handelAlreadyWatchedMovieClick,
-    });
-
-    this.#filmDetailsPopup = new FilmDetailsPopupView({
-      movie: this.#movie,
     });
 
     if(prevFilmCard === null || prevFilmDetailsPopup === null) {
@@ -70,20 +68,35 @@ export default class MoviePresenter {
     remove(this.#filmDetailsPopup);
   }
 
+  #getMovieCommnets(movie, comments) {
+    let movieComments = [];
+    movie.comments.forEach(movieCommentId => {
+        const foundComment = comments.find(comment => comment.id == movieCommentId);
+        if (foundComment) {
+          movieComments.push(foundComment);
+        }
+    });
+
+    return movieComments;
+  }
+
   #openDetailsPopup() {
+    this.#filmDetailsPopup = new FilmDetailsPopupView({
+      movie: this.#movie,
+      comments: this.#getMovieCommnets(this.#movie, this.#comments, ),
+      onFormSubmit: this.#handleFormSubmit,
+      onPopupClose: this.closeDetailsPopup.bind(this)
+    });
+
     //TODO: так как элемент filmDetailsPopup должен добавляться в конец body улемента.
     //TODO: Поэтому сейчас передаю BodyContainer из main.js. Как можно сделать это лучше.
     render(this.#filmDetailsPopup, this.#moviesBodyContainer);
 
-    this.#filmDetailsPopup.getClosePopupButton().addEventListener('click', this.#closeClickHandler);
-    document.addEventListener('keydown', this.#escKeyDownHandler);
     this.#handelModeChange();
     this.#mode = Mode.DETAILS;
   }
 
-  #closeDetailsPopup() {
-    this.#filmDetailsPopup.getClosePopupButton().removeEventListener('click', this.#closeClickHandler);
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
+  closeDetailsPopup() {
     remove(this.#filmDetailsPopup);
     this.#mode = Mode.DEFAULT;
   }
@@ -113,23 +126,28 @@ export default class MoviePresenter {
     this.#handelMovieDataChange({...this.#movie, userDetails});
   };
 
+  #handleFormSubmit = (update) => {
+
+  }
+
   #escKeyDownHandler = (evt) => {
     if(evt.key === 'Escape') {
       evt.preventDefault();
-      this.#closeDetailsPopup();
+      this.closeDetailsPopup();
     }
   };
 
   #closeClickHandler = (evt) => {
     if(evt.type === 'click') {
       evt.preventDefault();
-      this.#closeDetailsPopup();
+      this.closeDetailsPopup();
     }
   };
 
   resetView() {
     if(this.#mode !== Mode.DEFAULT) {
-      this.#closeDetailsPopup();
+      this.#filmDetailsPopup.reset();
+      this.closeDetailsPopup();
     }
   }
 }

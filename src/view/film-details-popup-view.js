@@ -1,13 +1,19 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import he from 'he';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {humanizeDateDayMonthYear, humanizeDateHoursMin, humanizeDateDayMonthYearTime} from '../utils/data.js';
 import {EmojiType} from '../utils/const.js';
+
+const BLANK_COMMENT = {
+  comment: null,
+  emotion: null,
+};
 
 function creatMovieGenreList(genres) {
   return genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 }
 
-function creatCommentsContainer(comments) {
-  const commentForm = creatCommentForm();
+function creatCommentsContainer(comments, newComment) {
+  const commentForm = creatCommentForm(newComment.emotion, newComment.comment);
   const commentList = creatCommentList(comments);
   
   return `
@@ -53,26 +59,28 @@ function creatComment(comment) {
   `
 }
 
-function creatEmojiList(emojis) {
+function creatEmojiList(emojis, selectedEmotion) {
   return emojis.map((emojiType) => `
-    <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emojiType}" value="${emojiType}">
+    <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emojiType}" value="${emojiType}" ${emojiType === selectedEmotion ? "checked" : ""}>
       <label class="film-details__emoji-label" for="emoji-${emojiType}">
         <img src="./images/emoji/${emojiType}.png" width="30" height="30" alt="emoji">
     </label>`)
     .join('');
 }
 
-function creatCommentForm() {
-  const emojiList = creatEmojiList(EmojiType);
+function creatCommentForm(selectedEmotion, comment) {
+  const emojiList = creatEmojiList(EmojiType, selectedEmotion);
 
   return `
     <form class="film-details__new-comment" action="" method="get">
       <div class="film-details__add-emoji-label">
-        <img src="images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
+        ${selectedEmotion ? `<img src="images/emoji/${selectedEmotion}.png" width="55" height="55" alt="emoji-smile">` : ''} 
       </div>
 
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+        <textarea class="film-details__comment-input" 
+          placeholder="Select reaction below and write comment here" 
+          name="comment">${comment ? he.encode(comment) : ''}</textarea>
       </label>
 
       <div class="film-details__emoji-list">
@@ -82,10 +90,10 @@ function creatCommentForm() {
   `
 }
 
-function creatFilmDetailsPopup(movieDetail, comments) {
+function creatFilmDetailsPopup(movieDetail, comments, newCommentState) {
   const {filmInfo, userDetails} = movieDetail;
   const genreList = creatMovieGenreList(filmInfo.genre);
-  const commentsContainer = creatCommentsContainer(comments);
+  const commentsContainer = creatCommentsContainer(comments, newCommentState);
   const movieWatchlistClassName = userDetails.watchlist
     ? 'film-details__control-button--active'
     : '';
@@ -170,26 +178,110 @@ function creatFilmDetailsPopup(movieDetail, comments) {
     </section>
   `;
 }
-export default class FilmDetailsPopupView extends AbstractView {
+export default class FilmDetailsPopupView extends AbstractStatefulView {
   #movie = null;
+  #handleFormSubmit = null;
+  #handlePopupClose = null;
   #comments = null;
-  constructor({movie, comments}) {
+
+  constructor({movie, comments, onFormSubmit, onPopupClose}) {
     super();
     this.#movie = movie;
-    this.#comments = [{
-      id: 'd9ee14cd-c0ca-4eab-8088-2219a0dbdc02',
-      comment: 'A film that changed my life, a true masterpiece, post-credit scene was just amazing omg.',
-      emotion: 'smile',
-      author: 'Ilya OReilly',
-      date: '2022-11-26T16:12:32.554Z'
-    }];
+    this.#comments = comments;
+    this._setState(FilmDetailsPopupView.parseCommentToState(BLANK_COMMENT));
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handlePopupClose = onPopupClose;
+    this._restoreHandlers()
+  }
+
+  _restoreHandlers() {
+    this.element.querySelector('form')
+      .addEventListener('keydown', this.#ctrlCommandEnterKeyDownHandler);
+
+    this.element.querySelectorAll('[name="comment-emoji"]')
+      .forEach(element => {
+          element.addEventListener('change', (event) => {
+          event.preventDefault();
+          this.updateEmotion(element.value);
+        });
+      });
+
+    this.element.querySelector('.film-details__comment-input')
+      .addEventListener('input', this.#commentInputHandler);
+
+    this.element.querySelector('.film-details__close-btn')
+      .addEventListener('click', (event) => {
+        this.#handlePopupClose()
+      });
+
+    document.addEventListener('keydown', (event) => {
+      if(event.key === 'Escape') {
+        this.#handlePopupClose();
+      }
+    });
   }
 
   get template() {
-    return creatFilmDetailsPopup(this.#movie, this.#comments);
+    return creatFilmDetailsPopup(this.#movie, this.#comments, this._state);
+  }
+
+  reset() {
+    this.updateElement(
+      FilmDetailsPopupView.parseCommentToState(BLANK_COMMENT),
+    );
   }
 
   getClosePopupButton() {
     return this.element.querySelector('.film-details__close-btn');
+  }
+
+  updateEmotion(newEmotion) {
+    this.updateElement({
+      emotion: newEmotion
+    });
+  }
+
+  #commentInputHandler = (evt) => {
+    this._setState({
+      comment: evt.target.value,
+    });
+  }
+
+  #ctrlCommandEnterKeyDownHandler = (evt) => {
+    if(evt.key === 'Enter') {
+      this.updateElement({
+        comment: evt.target.value,
+      });
+      this.#formSubmitHandler(evt);
+    }
+  }
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit(FilmDetailsPopupView.parseStateToComment(this._state));
+  };
+
+  static parseCommentToState(comment) {
+    return {...comment,
+      isEmotionChecked: null,
+      isComment: null,
+    };
+  }
+
+  static parseStateToComment(state) {
+    const commentData = {...state};
+
+    if(!commentData.isEmotionChecked) {
+      commentData.emotion = null;
+    }
+
+    if(!commentData.isComment) {
+      commentData.comment = null;
+    }
+
+    delete commentData.isEmotionChecked;
+    delete commentData.isComment;
+
+    return commentData;
   }
 }

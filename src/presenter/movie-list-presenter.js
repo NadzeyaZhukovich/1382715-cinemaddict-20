@@ -23,6 +23,7 @@ export default class MovieListPresenter {
 
   #movies = [];
   #sourcedMovies = [];
+  #comments = [];
 
   #navigationList = null;
   #sortComponent = null;
@@ -36,13 +37,14 @@ export default class MovieListPresenter {
   #renderMoviesCount = MOVIE_COUNT_PER_STEP;
   #currentSortType = SortType.DEFAULT;
 
-  constructor({moviesHeaderContainer, moviesMainContainer, moviesFooterStatisticsContainer, moviewsBodyContainer, movies}) {
+  constructor({moviesHeaderContainer, moviesMainContainer, moviesFooterStatisticsContainer, moviewsBodyContainer, movies, comments}) {
     this.#moviesHeaderContainer = moviesHeaderContainer;
     this.#moviesMainContainer = moviesMainContainer;
     this.#moviesFooterStatisticsContainer = moviesFooterStatisticsContainer;
     this.#moviesBodyContainer = moviewsBodyContainer;
     this.#movies = [...movies];
     this.#sourcedMovies = [...movies];
+    this.#comments = [...comments];
     this.#navigationList = generateNavigation(this.#movies);
   }
 
@@ -66,7 +68,7 @@ export default class MovieListPresenter {
       this.#renderMovieList();
 
       for(let i = 0; i < Math.min(movieList.length, MOVIE_COUNT_PER_STEP); i++) {
-        this.#renderMovieCard(movieList[i]);
+        this.#renderMovieCard(movieList[i], this.#comments);
       }
     }
   }
@@ -99,15 +101,14 @@ export default class MovieListPresenter {
     render(this.#movieList, this.#moviesMainContainer);
   }
 
-  #renderMovieCard(movie) {
+  #renderMovieCard(movie, comments) {
     const moviePresenter = new MoviePresenter({
       movieContainer: this.#movieList.getFilmCardContainer(),
       moviesBodyContainer: this.#moviesBodyContainer,
       onModeChange: this.#handleModeChange,
       onMovieDataChange: this.#handelMovieChange,
     });
-
-    moviePresenter.init(movie);
+    moviePresenter.init(movie, comments);
     this.#moviePresenters.set(movie.id, moviePresenter);
   }
 

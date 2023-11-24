@@ -14,6 +14,7 @@ const movieList = new MovieListPresenter({
   moviesFooterStatisticsContainer: siteFooterStatisticsElement,
   moviewsBodyContainer: siteBodyElement,
   movies: moviesModel.movies,
+  comments: moviesModel.comments,
 });
 
 movieList.init();
