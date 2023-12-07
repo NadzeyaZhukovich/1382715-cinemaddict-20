@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 const DATE_FORMAT = {
   year: 'YYYY',
   dayMonthYear: 'DD MMMM YYYY',
+  dayMonthYearTime: 'YYYY/MM/DD HH:mm'
 };
 
 const MINUTS_IN_HOUR = 60;
@@ -16,6 +17,10 @@ function humanizeDateDayMonthYear(dueDate) {
   return dueDate ? dayjs(dueDate).format(DATE_FORMAT.dayMonthYear) : '';
 }
 
+function humanizeDateDayMonthYearTime(dueDate) {
+  return dueDate ? dayjs(dueDate).format(DATE_FORMAT.dayMonthYearTime) : '';
+}
+
 function humanizeDateHoursMin(timeInMimutes) {
   if(timeInMimutes === MINUTS_IN_HOUR) {
     return '1h';
@@ -26,4 +31,4 @@ function humanizeDateHoursMin(timeInMimutes) {
   }
 }
 
-export {humanizeDateYear, humanizeDateDayMonthYear, humanizeDateHoursMin};
+export {humanizeDateYear, humanizeDateDayMonthYear, humanizeDateHoursMin, humanizeDateDayMonthYearTime};

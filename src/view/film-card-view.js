@@ -2,7 +2,7 @@ import AbstractView from '../framework/view/abstract-view.js';
 import {humanizeDateYear, humanizeDateHoursMin} from '../utils/data';
 
 function creatFilmCard(movieDetail) {
-  const {filmInfo, userDetails} = movieDetail;
+  const {comments, filmInfo, userDetails} = movieDetail;
   const movieWatchlistClassName = userDetails.watchlist
     ? 'film-card__controls-item--active'
     : '';
@@ -25,7 +25,7 @@ function creatFilmCard(movieDetail) {
         </p>
         <img src="./${filmInfo.poster}" alt="${filmInfo.alternativeTitle}" class="film-card__poster">
         <p class="film-card__description">${filmInfo.description}</p>
-        <span class="film-card__comments">0 comments</span>
+        <span class="film-card__comments">${comments ? comments.length : '0'} comments</span>
       </a>
       <div class="film-card__controls">
         <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${movieWatchlistClassName}" type="button">Add to watchlist</button>

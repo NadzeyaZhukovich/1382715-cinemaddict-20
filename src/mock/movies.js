@@ -2,7 +2,9 @@ const movies = [
   {
     'id': 'd9ee14cd-c0ca-4eab-8088-2219a0dbdc001',
     'comments': [
-      'd9ee14cd-c0ca-4eab-8088-2219a0dbdc01'
+      'd9ee14cd-c0ca-4eab-8088-2219a0dbdc01',
+      'd9ee14cd-c0ca-4eab-8088-2219a0dbdc02',
+      'd9ee14cd-c0ca-4eab-8088-2219a0dbdc03'
     ],
     'film_info': {
       'title': 'A Little Pony Without The Carpet',
@@ -10,7 +12,7 @@ const movies = [
       'description': 'Oscar-winning film, a war drama about two young people, from the creators of timeless classic Nu Pogodi! and Alice in Wonderland, with the best fight scenes since Bruce Lee.',
       'total_rating': 5.3,
       'poster': 'images/posters/popeye-meets-sinbad.png',
-      'age_rating': 0,
+      'age_rating': 3,
       'director': 'Tom Ford',
       'writers': [
         'Takeshi Kitano'
@@ -46,7 +48,7 @@ const movies = [
       'description': 'Oscar-winning film, a war drama about two young people, from the creators of timeless classic Nu Pogodi! and Alice in Wonderland, with the best fight scenes since Bruce Lee.',
       'total_rating': 4.3,
       'poster': 'images/posters/made-for-each-other.png',
-      'age_rating': 0,
+      'age_rating': 14,
       'director': 'Tom Ford',
       'writers': [
         'Takeshi Kitano'
@@ -116,7 +118,7 @@ const movies = [
       'description': 'Oscar-winning film, a war drama about two young people, from the creators of timeless classic Nu Pogodi! and Alice in Wonderland, with the best fight scenes since Bruce Lee.',
       'total_rating': 8.6,
       'poster': 'images/posters/santa-claus-conquers-the-martians.jpg',
-      'age_rating': 0,
+      'age_rating': 18,
       'director': 'Tom Ford',
       'writers': [
         'Takeshi Kitano'
