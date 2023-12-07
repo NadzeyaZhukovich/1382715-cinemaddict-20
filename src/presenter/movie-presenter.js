@@ -127,22 +127,8 @@ export default class MoviePresenter {
   };
 
   #handleFormSubmit = (update) => {
-
+    console.log('Update in movie-presenter=> ', update)
   }
-
-  #escKeyDownHandler = (evt) => {
-    if(evt.key === 'Escape') {
-      evt.preventDefault();
-      this.closeDetailsPopup();
-    }
-  };
-
-  #closeClickHandler = (evt) => {
-    if(evt.type === 'click') {
-      evt.preventDefault();
-      this.closeDetailsPopup();
-    }
-  };
 
   resetView() {
     if(this.#mode !== Mode.DEFAULT) {

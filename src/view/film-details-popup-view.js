@@ -13,7 +13,7 @@ function creatMovieGenreList(genres) {
 }
 
 function creatCommentsContainer(comments, newComment) {
-  const commentForm = creatCommentForm(newComment.emotion, newComment.comment);
+  const commentForm = creatCommentForm(newComment.isEmotionChecked, newComment.comment);
   const commentList = creatCommentList(comments);
   
   return `
@@ -237,21 +237,18 @@ export default class FilmDetailsPopupView extends AbstractStatefulView {
 
   updateEmotion(newEmotion) {
     this.updateElement({
-      emotion: newEmotion
+      isEmotionChecked: newEmotion
     });
   }
 
   #commentInputHandler = (evt) => {
     this._setState({
-      comment: evt.target.value,
+      isComment: evt.target.value,
     });
   }
 
   #ctrlCommandEnterKeyDownHandler = (evt) => {
     if(evt.key === 'Enter') {
-      this.updateElement({
-        comment: evt.target.value,
-      });
       this.#formSubmitHandler(evt);
     }
   }
@@ -259,6 +256,7 @@ export default class FilmDetailsPopupView extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit(FilmDetailsPopupView.parseStateToComment(this._state));
+    this.reset();
   };
 
   static parseCommentToState(comment) {
@@ -273,10 +271,14 @@ export default class FilmDetailsPopupView extends AbstractStatefulView {
 
     if(!commentData.isEmotionChecked) {
       commentData.emotion = null;
+    } else {
+      commentData.emotion = commentData.isEmotionChecked;
     }
 
     if(!commentData.isComment) {
       commentData.comment = null;
+    } else {
+      commentData.comment = commentData.isComment;
     }
 
     delete commentData.isEmotionChecked;
