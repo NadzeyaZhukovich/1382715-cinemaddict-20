@@ -69,12 +69,12 @@ export default class MoviePresenter {
   }
 
   #getMovieCommnets(movie, comments) {
-    let movieComments = [];
-    movie.comments.forEach(movieCommentId => {
-        const foundComment = comments.find(comment => comment.id == movieCommentId);
-        if (foundComment) {
-          movieComments.push(foundComment);
-        }
+    const movieComments = [];
+    movie.comments.forEach((movieCommentId) => {
+      const foundComment = comments.find((comment) => comment.id === movieCommentId);
+      if (foundComment) {
+        movieComments.push(foundComment);
+      }
     });
 
     return movieComments;
@@ -83,7 +83,7 @@ export default class MoviePresenter {
   #openDetailsPopup() {
     this.#filmDetailsPopup = new FilmDetailsPopupView({
       movie: this.#movie,
-      comments: this.#getMovieCommnets(this.#movie, this.#comments, ),
+      comments: this.#getMovieCommnets(this.#movie, this.#comments),
       onFormSubmit: this.#handleFormSubmit,
       onPopupClose: this.closeDetailsPopup.bind(this)
     });
@@ -127,8 +127,8 @@ export default class MoviePresenter {
   };
 
   #handleFormSubmit = (update) => {
-    console.log('Update in movie-presenter=> ', update)
-  }
+    console.log('Update in movie-presenter=> ', update);
+  };
 
   resetView() {
     if(this.#mode !== Mode.DEFAULT) {
